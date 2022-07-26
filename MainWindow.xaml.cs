@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace MatchGame
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -49,6 +46,31 @@ namespace MatchGame
                 string nextEmoji = animalEmoji[index];
                 textblock.Text = nextEmoji;
                 animalEmoji.RemoveAt(index);
+            }
+        }
+
+        TextBlock lastTBClicked = new TextBlock();
+        bool isFindingMatch = false;
+
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            TextBlock textblock = sender as TextBlock;
+
+            if (!isFindingMatch)
+            {
+                lastTBClicked = textblock;
+                textblock.Visibility = Visibility.Hidden;
+                isFindingMatch = true;
+            }
+            else if (lastTBClicked.Text == textblock.Text)
+            {
+                textblock.Visibility = Visibility.Hidden;
+                isFindingMatch = false;
+            }
+            else
+            {
+                lastTBClicked.Visibility = Visibility.Visible;
+                isFindingMatch = false;
             }
         }
     }
