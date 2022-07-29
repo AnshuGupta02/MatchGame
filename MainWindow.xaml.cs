@@ -54,6 +54,7 @@ namespace MatchGame
                 gamestarttime.Text = "3";
                 GameStart.Visibility = Visibility.Hidden;
                 mainGrid.Visibility = Visibility.Visible;
+                SetUpGame();
             }
         }
 
@@ -93,7 +94,6 @@ namespace MatchGame
         private void SetUpGame()
         {
             HighScore.FontSize = 20;
-            StartGame();
             List<string> animalEmoji = new List<string>()
             {
                 "🐶","🐶",
@@ -121,7 +121,7 @@ namespace MatchGame
             }
 
             timer.Start();
-            tenthOfSecElapsed = -22;
+            tenthOfSecElapsed = 0;
             matchesFound = 0;
         }
 
@@ -163,7 +163,7 @@ namespace MatchGame
 
         private void Button_Click_Yes(object sender, RoutedEventArgs e)
         {
-            SetUpGame();
+            StartGame();
         }
 
         private void Button_Click_No(object sender, RoutedEventArgs e)
