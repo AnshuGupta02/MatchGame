@@ -21,22 +21,40 @@ namespace MatchGame
     public partial class MainWindow : Window
     {
         DispatcherTimer timer = new DispatcherTimer();
+        DispatcherTimer starttimer = new DispatcherTimer();
 
         int tenthOfSecElapsed;
+        int SecElapsed = 4;
         int matchesFound;
         string wining = "Hurray! you BEAT the high score! Wanna beat your own score?";
         string lost = "Oops, You Lost. Its okay! Try Again?";
-
-        double highScore = 20;
+        string tie = "Hey Its a tie! Beat the high score if you can!";
 
         public MainWindow()
         {
             InitializeComponent();
 
+
+            HighScore.Text = $"High Score - {Properties.Settings.Default.highScore} sec";
+
             timer.Interval = TimeSpan.FromSeconds(.1);
             timer.Tick += Timer_Tick;
 
-            SetUpGame();
+            starttimer.Interval = TimeSpan.FromSeconds(1);
+            starttimer.Tick += Start_Timer_Tick;
+        }
+
+        private void Start_Timer_Tick(object sender, EventArgs e)
+        {
+            SecElapsed--;
+            gamestarttime.Text = SecElapsed.ToString();
+            if (SecElapsed < 0)
+            {
+                starttimer.Stop();
+                gamestarttime.Text = "3";
+                GameStart.Visibility = Visibility.Hidden;
+                mainGrid.Visibility = Visibility.Visible;
+            }
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -47,17 +65,24 @@ namespace MatchGame
             {
                 timer.Stop();
                 double currentTime = Convert.ToDouble(timeTextBlock.Text.Remove(timeTextBlock.Text.IndexOf('s')));
-                if (currentTime < highScore)
+                if (currentTime < Properties.Settings.Default.highScore)
                 {
                     Msg.Text = wining;
                     HighScore.Text = $"High Score - {currentTime} sec";
-                    HighScore.FontSize = 35;
-                    highScore = currentTime;
+                    Properties.Settings.Default.highScore = currentTime;
+                    Properties.Settings.Default.Save();
+                }
+                else if (currentTime == Properties.Settings.Default.highScore) {
+                    Msg.Text = tie;
+
                 }
                 else
                 {
                     Msg.Text = lost;
                 };
+
+
+                HighScore.FontSize = 35;
 
                 mainGrid.Visibility = Visibility.Hidden;
                 GameFinish.Visibility = Visibility.Visible;
@@ -102,12 +127,12 @@ namespace MatchGame
 
         private void StartGame()
         {
+            FirstScreen.Visibility = Visibility.Hidden;
             GameFinish.Visibility = Visibility.Hidden;
-            //GameStart.Visibility = Visibility.Visible;
-            //Thread.Sleep(5000);
-            GameStart.Visibility = Visibility.Hidden;
-            // set timer.. after 3 make main grid visible
-            mainGrid.Visibility = Visibility.Visible;
+            GameStart.Visibility = Visibility.Visible;
+            starttimer.Start();
+            if (SecElapsed < 0)
+                SecElapsed = 3;
         }
 
         TextBlock lastTBClicked = new TextBlock();
@@ -144,6 +169,16 @@ namespace MatchGame
         private void Button_Click_No(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void Reset_High_Score(object sender, RoutedEventArgs e)
+        {
+            // RESET THE HIGH SCORE
+            Properties.Settings.Default.highScore = Double.PositiveInfinity;
+            Properties.Settings.Default.Save();
+
+
+            HighScore.Text = $"High Score - {Properties.Settings.Default.highScore} sec";
         }
     }
 }

@@ -11,7 +11,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="HighScore" Grid.Row="0" Text="High Score - 20 sec" FontSize="20" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"/>
+        <TextBlock x:Name="HighScore" Grid.Row="0" Text="High Score - 20 sec" FontSize="30" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"/>
 
         <StackPanel x:Name="GameFinish" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden">
             <TextBlock x:Name="Msg" Text="Message" TextWrapping="Wrap" FontSize="30"  Margin="10" TextAlignment="Center"/>
@@ -21,9 +21,15 @@
             </StackPanel>
         </StackPanel>
 
-        <StackPanel x:Name="GameStart" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel x:Name="GameStart" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden">
             <TextBlock FontSize="30" Text="Ready, Set, Go!"/>
-            <TextBlock x:Name="gamestarttime" FontSize="30" Text="Time" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="gamestarttime" FontSize="30" HorizontalAlignment="Center"/>
+        </StackPanel>
+
+        <StackPanel x:Name="FirstScreen" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
+            <TextBlock FontSize="20" TextWrapping="Wrap" TextAlignment="Center" Margin="5, 30">Find All The Matching Animals in minimum Time and set your High Score!</TextBlock>
+            <Button FontSize="25" Background="#3d3d3d" Foreground="White" Padding="3, 10" Click="Button_Click_Yes">Start</Button>
+            <Button Margin="25" FontSize="18" Padding="5" Click="Reset_High_Score">Reset High Score</Button>
         </StackPanel>
 
         <Grid x:Name="mainGrid" Grid.Row="1" Visibility="Hidden">
