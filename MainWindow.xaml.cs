@@ -23,12 +23,14 @@ namespace MatchGame
         DispatcherTimer timer = new DispatcherTimer();
         DispatcherTimer starttimer = new DispatcherTimer();
 
-        int tenthOfSecElapsed;
+        double tenthOfSecElapsed;
         int SecElapsed = 4;
         int matchesFound;
         string wining = "Hurray! you BEAT the high score! Wanna beat your own score?";
         string lost = "Oops, You Lost. Its okay! Try Again?";
         string tie = "Hey Its a tie! Beat the high score if you can!";
+        string newScore = "Hey! you setted a new high score. lets beat it!";
+        bool inc;
 
         public MainWindow()
         {
@@ -60,34 +62,53 @@ namespace MatchGame
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            tenthOfSecElapsed++;
+            if (inc)
+            {
+                tenthOfSecElapsed++;
+            }
+            else
+            {
+                tenthOfSecElapsed--;
+            }
+            
             timeTextBlock.Text = (tenthOfSecElapsed/10f).ToString("0.0 sec");
+            
             if (matchesFound == 8)
             {
                 timer.Stop();
                 double currentTime = Convert.ToDouble(timeTextBlock.Text.Remove(timeTextBlock.Text.IndexOf('s')));
-                if (currentTime < Properties.Settings.Default.highScore)
+                if (inc)
                 {
-                    Msg.Text = wining;
+                    Msg.Text = newScore;
                     HighScore.Text = $"High Score - {currentTime} sec";
                     Properties.Settings.Default.highScore = currentTime;
                     Properties.Settings.Default.Save();
                 }
-                else if (currentTime == Properties.Settings.Default.highScore) {
+                else if (currentTime > 0.0)
+                {
+                    Msg.Text = wining +$"(by {currentTime} sec)";
+                    double score = Properties.Settings.Default.highScore - currentTime;
+                    HighScore.Text = $"High Score - {score} sec";
+                    Properties.Settings.Default.highScore = score;
+                    Properties.Settings.Default.Save();
+                }
+                else if (currentTime == 0.0) {
                     Msg.Text = tie;
 
                 }
-                else
-                {
-                    Msg.Text = lost;
-                };
-
 
                 HighScore.FontSize = 35;
 
                 mainGrid.Visibility = Visibility.Hidden;
                 GameFinish.Visibility = Visibility.Visible;
 
+            }
+            else if (timeTextBlock.Text == "0.0 sec")
+            {
+                timer.Stop();
+                Msg.Text = lost;
+                mainGrid.Visibility = Visibility.Hidden;
+                GameFinish.Visibility = Visibility.Visible;
             }
         }
 
@@ -121,7 +142,19 @@ namespace MatchGame
             }
 
             timer.Start();
-            tenthOfSecElapsed = 0;
+            if (Double.IsPositiveInfinity(Properties.Settings.Default.highScore))
+            {
+                timeTextBlock.Text = "0.0 sec";
+                tenthOfSecElapsed = 0;
+                inc = true;
+            }
+            else
+            {
+                timeTextBlock.Text = Properties.Settings.Default.highScore + " sec";
+                tenthOfSecElapsed = Properties.Settings.Default.highScore * 10;
+                inc = false;
+            }
+            
             matchesFound = 0;
         }
 
