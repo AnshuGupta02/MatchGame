@@ -121,7 +121,7 @@ namespace MatchGame
             }
 
             timer.Start();
-            tenthOfSecElapsed = 0;
+            tenthOfSecElapsed = -22;
             matchesFound = 0;
         }
 
